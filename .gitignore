@@ -11,12 +11,19 @@ venv/
 # 环境与密钥：Pixiv Cookie 等第三方凭据只允许放在服务端本地环境，禁止入库
 .env
 .env.*
+!.env.example
 
-# 运行产物
+# 运行产物（只忽略仓库根目录的 data/，夹具数据必须入库）
 *.log
-data/
+/data/
 
 # IDE / OS
 .idea/
 .vscode/
 .DS_Store
+
+# 生成的示例图片与服务端 OpenAPI 快照（可由脚本重新生成）
+app/static/images/
+openapi.json
+
+

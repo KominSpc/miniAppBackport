@@ -1,0 +1,26 @@
+services:
+  mock:
+    build: .
+    image: miniapp-backport-mock:local
+    ports:
+      - "8000:8000"
+    environment:
+      # 模拟行为开关（GET /health 会回显当前生效值）
+      MOCK_LATENCY_MS: "0"
+      MOCK_EMPTY: "false"
+      MOCK_RATE_LIMITED: "false"
+      MOCK_ERROR: "false"
+      DEV_RESET_ENABLED: "true"
+      DEV_ADMIN_TOKEN: "dev-admin-token"
+      TOKEN_TTL_HOURS: "720"
+      RATE_LIMIT_PER_MINUTE: "600"
+      # 留空表示按请求 Host 生成内容链接，本机与局域网真机联调都能用
+      PUBLIC_BASE_URL: ""
+      CORS_EXTRA_ORIGINS: ""
+      # Pixiv 等第三方凭据只允许放在服务端环境变量里，禁止写进仓库
+      # PIXIV_COOKIE: ""
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

@@ -1,0 +1,433 @@
+[
+  {
+    "id": "fact_0001",
+    "content": "「作画监督」负责统一单集内的角色与画面风格，是动画制作的关键岗位。",
+    "tags": [
+      "动画",
+      "制作"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0002",
+    "content": "日式 TV 动画常见的规格是每季 12～13 集，两季合并播出称为「分割两季」。",
+    "tags": [
+      "动画",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0003",
+    "content": "「OAD」指随漫画单行本同捆发售的原创动画，通常不单独上电视播出。",
+    "tags": [
+      "动画",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0004",
+    "content": "「WEB 动画」指以网络为主要发布渠道的动画短片，单集时长通常更短。",
+    "tags": [
+      "动画",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0005",
+    "content": "日语「声優」在中文里写作「声优」，指以配音为主要工作的演员。",
+    "tags": [
+      "声优",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0006",
+    "content": "「三话定律」指观众常在第 3 集判断一部作品是否值得继续追。",
+    "tags": [
+      "动画",
+      "文化"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0007",
+    "content": "「同人志」指非官方出版的自费出版物，是二次创作的重要载体。",
+    "tags": [
+      "同人",
+      "文化"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0008",
+    "content": "「MAD」是源自日本网络文化的二次创作视频形式，以剪辑与音画同步为特色。",
+    "tags": [
+      "同人",
+      "视频"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0009",
+    "content": "「痛车」指用动漫角色贴纸与涂装装饰的车辆，属于推し活的一种表达。",
+    "tags": [
+      "文化",
+      "推し活"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0010",
+    "content": "「痛包」指挂满角色徽章与挂件的包，常被用来在活动现场展示喜好。",
+    "tags": [
+      "文化",
+      "推し活"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0011",
+    "content": "「コスプレイヤー」指进行角色扮演的人，中文常简称为 Coser。",
+    "tags": [
+      "cosplay",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0012",
+    "content": "角色设计里的「兽耳」通常指猫耳、狐耳等动物耳朵造型。",
+    "tags": [
+      "角色设计",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0013",
+    "content": "Pixiv 的插画详情页 URL 形如 /artworks/<插画ID>，其中 ID 为一串数字。",
+    "tags": [
+      "Pixiv"
+    ],
+    "source_url": "https://www.pixiv.net/"
+  },
+  {
+    "id": "fact_0014",
+    "content": "Pixiv 的排行榜支持日榜、周榜、月榜等模式，接口为 ranking.php。",
+    "tags": [
+      "Pixiv",
+      "排行榜"
+    ],
+    "source_url": "https://www.pixiv.net/ranking.php"
+  },
+  {
+    "id": "fact_0015",
+    "content": "Pixiv 的标签翻译功能会为日文标签补上英文翻译，便于跨语言检索。",
+    "tags": [
+      "Pixiv",
+      "标签"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0016",
+    "content": "Pixiv 上「关注」与「收藏」是两套独立功能，收藏又分为公开与私密。",
+    "tags": [
+      "Pixiv",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0017",
+    "content": "Pixiv 的 xRestrict 字段用于标记作品年龄分级，取值 0/1/2 分别对应全年龄、R-18、R-18G。",
+    "tags": [
+      "Pixiv",
+      "安全"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0018",
+    "content": "Pixiv 的 ajax 接口返回信封形如 {error, message, body}，与图片直链不同。",
+    "tags": [
+      "Pixiv",
+      "接口"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0019",
+    "content": "i.pximg.net 会校验 Referer，缺少或伪造 Referer 的图片请求会返回 403。",
+    "tags": [
+      "Pixiv",
+      "接口"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0020",
+    "content": "Pixiv 的插画可能包含多页，每页都有 original / regular / small 三种尺寸。",
+    "tags": [
+      "Pixiv",
+      "接口"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0021",
+    "content": "Live2D Cubism 的模型描述文件后缀为 .model3.json，模型本体为 .moc3。",
+    "tags": [
+      "Live2D",
+      "文件格式"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0022",
+    "content": ".motion3.json 描述动作曲线，可定义多个动作并按路径直接播放。",
+    "tags": [
+      "Live2D",
+      "文件格式"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0023",
+    "content": ".exp3.json 描述表情，通常配合参数覆盖实现眨眼与情绪切换。",
+    "tags": [
+      "Live2D",
+      "文件格式"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0024",
+    "content": ".physics3.json 描述物理摆动，常用于头发与饰品的自然晃动。",
+    "tags": [
+      "Live2D",
+      "文件格式"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0025",
+    "content": "Live2D 模型的 HitAreas 为空时，命中检测需要改用自定义热区实现。",
+    "tags": [
+      "Live2D",
+      "开发"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0026",
+    "content": "Cubism 模型可先用 4K 纹理制作，再降采样到移动端规格以压缩包体。",
+    "tags": [
+      "Live2D",
+      "性能"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0027",
+    "content": "Flutter 中用 RepaintBoundary 隔离重绘，能显著降低动画场景的绘制开销。",
+    "tags": [
+      "Flutter",
+      "性能"
+    ],
+    "source_url": "https://docs.flutter.dev/"
+  },
+  {
+    "id": "fact_0028",
+    "content": "Flutter 的 const 构造函数可以让相同参数的 Widget 复用实例，减少重建。",
+    "tags": [
+      "Flutter",
+      "性能"
+    ],
+    "source_url": "https://docs.flutter.dev/"
+  },
+  {
+    "id": "fact_0029",
+    "content": "Dart 的 final 只保证变量不可再次赋值，const 还要求编译期可求值。",
+    "tags": [
+      "Dart",
+      "语法"
+    ],
+    "source_url": "https://dart.dev/"
+  },
+  {
+    "id": "fact_0030",
+    "content": "Flutter web 的 CanvasKit 渲染器依赖 WebAssembly，首屏体积明显大于移动端。",
+    "tags": [
+      "Flutter",
+      "web"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0031",
+    "content": "Flutter web 受同源策略约束，跨域取图需要服务端提供 CORS 响应头。",
+    "tags": [
+      "Flutter",
+      "web"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0032",
+    "content": "浏览器的 localStorage 不具备 Keychain / Keystore 级别的安全强度。",
+    "tags": [
+      "安全",
+      "web"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0033",
+    "content": "Android 的 Keystore 可以把密钥保存在硬件安全模块中，应用无法直接读出明文。",
+    "tags": [
+      "安全",
+      "Android"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0034",
+    "content": "瀑布流布局需要提前知道图片宽高，否则会在加载完成时产生跳动。",
+    "tags": [
+      "UI",
+      "布局"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0035",
+    "content": "WebP 在同画质下通常比 JPEG 小 25% 以上，适合图片较多的列表页。",
+    "tags": [
+      "图片",
+      "性能"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0036",
+    "content": "HTTP 的 Retry-After 响应头用于告知客户端建议的重试等待秒数。",
+    "tags": [
+      "HTTP",
+      "规范"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0037",
+    "content": "HTTP 429 表示请求过于频繁，客户端应退避重试而不是立即重发。",
+    "tags": [
+      "HTTP",
+      "规范"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0038",
+    "content": "指数退避配合随机抖动可以避免大量客户端在同一时刻重试造成雪崩。",
+    "tags": [
+      "架构",
+      "稳定性"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0039",
+    "content": "不透明游标分页比 offset 分页更稳定，新增数据时不会造成条目重复或跳过。",
+    "tags": [
+      "架构",
+      "分页"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0040",
+    "content": "REST 中的 PUT 与 DELETE 应当是幂等的，重复调用结果一致。",
+    "tags": [
+      "HTTP",
+      "规范"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0041",
+    "content": "OpenAPI 文档可以作为客户端与服务端之间唯一的结构化契约来源。",
+    "tags": [
+      "接口",
+      "契约"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0042",
+    "content": "ISO 8601 时间戳带上时区偏移后，跨时区展示不会产生歧义。",
+    "tags": [
+      "时间",
+      "规范"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0043",
+    "content": "动漫中的「flag」一词被引申为剧情伏笔或必然发生的桥段。",
+    "tags": [
+      "文化",
+      "常用语"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0044",
+    "content": "「生肉」「熟肉」分别指没有字幕与已有字幕的片源。",
+    "tags": [
+      "文化",
+      "常用语"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0045",
+    "content": "「白学」源自作品剧情争议，现泛指角色间复杂的情感纠葛讨论。",
+    "tags": [
+      "文化",
+      "常用语"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0046",
+    "content": "「OVA」指不通过电视播出的原创动画，多以光盘形式发售。",
+    "tags": [
+      "动画",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0047",
+    "content": "「前情提要」在日式动画中常配合固定的过场画面播出。",
+    "tags": [
+      "动画",
+      "常识"
+    ],
+    "source_url": null
+  },
+  {
+    "id": "fact_0048",
+    "content": "动画的「总作画监督」负责统筹全篇角色作画的统一性。",
+    "tags": [
+      "动画",
+      "制作"
+    ],
+    "source_url": null
+  }
+]
