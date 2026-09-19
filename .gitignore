@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 环境与密钥：Pixiv Cookie 等第三方凭据只允许放在服务端本地环境，禁止入库
+.env
+.env.*
+
+# 运行产物
+*.log
+data/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
