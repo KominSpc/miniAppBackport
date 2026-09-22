@@ -5,6 +5,9 @@
 Flutter 客户端仓库：`KominSpc/MiniApp`，其 `contract/openapi.json` 是客户端-服务端契约的单一事实来源。
 本仓库按该契约实现全部 `/v1` 接口，供本地与局域网联调使用；后续接入真实上游（Pixiv / B 站 / 游戏库）时，路径与响应结构保持不变。
 
+> 部署到 Linux 服务器（systemd / MySQL / 音乐与漫画上游服务、安全组与验收清单）见
+> [`docs/DEPLOY.md`](docs/DEPLOY.md)。
+
 ## 快速开始
 
 ```powershell
