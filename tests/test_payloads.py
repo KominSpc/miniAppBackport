@@ -24,10 +24,12 @@ def collect_items(client: TestClient, auth: dict[str, str]) -> list[dict]:
     items: list[dict] = []
     items += client.get("/v1/images/recommended?limit=50", headers=auth).json()["data"]["items"]
     items += client.get("/v1/images/daily", headers=auth).json()["data"]["items"]
-    items += client.get("/v1/daily/bilibili", headers=auth).json()["data"]["items"]
     items += client.get("/v1/games?limit=50", headers=auth).json()["data"]["items"]
     items += client.get("/v1/games/today", headers=auth).json()["data"]["items"]
     items += client.post("/v1/pet/chat", json={"message": "讲个冷知识"}, headers=auth).json()["data"]["suggestions"]
+    # B 站每日热点已下线（docs/archive/bilibili_source/README.md）：视频条目改从
+    # 桌宠建议取（同一个 catalog.all_videos，走本地夹具），契约覆盖面不变。
+    items += client.post("/v1/pet/chat", json={"message": "推荐点视频"}, headers=auth).json()["data"]["suggestions"]
     return items
 
 

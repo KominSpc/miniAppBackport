@@ -3,7 +3,7 @@ services:
     build: .
     image: miniapp-backport-mock:local
     ports:
-      - "8000:8000"
+      - "18421:18421"
     environment:
       # 模拟行为开关（GET /health 会回显当前生效值）
       MOCK_LATENCY_MS: "0"
@@ -20,7 +20,7 @@ services:
       # Pixiv 等第三方凭据只允许放在服务端环境变量里，禁止写进仓库
       # PIXIV_COOKIE: ""
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"]
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:18421/health').status==200 else 1)"]
       interval: 30s
       timeout: 5s
       retries: 3

@@ -16,6 +16,6 @@ COPY scripts ./scripts
 # 夹具与示例图在构建期生成，容器启动即可用，不依赖外网
 RUN python scripts/generate_sample_images.py --force
 
-EXPOSE 8000
+EXPOSE 18421
 
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "18421"]

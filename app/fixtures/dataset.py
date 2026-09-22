@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
@@ -42,3 +42,15 @@ def load_fixtures() -> FixtureSet:
         games=_read("games.json"),
         facts=_read("facts.json"),
     )
+
+
+@lru_cache(maxsize=1)
+def load_aliases() -> Mapping[str, tuple[str, ...]]:
+    """别名表：规范词 -> 其他常见写法，供检索模块做写法展开。"""
+    path = DATA_DIR / "aliases.json"
+    if not path.exists():
+        raise FileNotFoundError(
+            f"缺少夹具 {path}，请先执行 python scripts/generate_fixtures.py"
+        )
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {key: tuple(value) for key, value in data.items()}

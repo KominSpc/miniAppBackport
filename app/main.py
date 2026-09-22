@@ -13,10 +13,11 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api import openapi as openapi_meta
-from app.api.v1 import daily as daily_routes
+from app.api.v1 import comics as comics_routes
 from app.api.v1 import dev as dev_routes
 from app.api.v1 import games as games_routes
 from app.api.v1 import images as images_routes
+from app.api.v1 import music as music_routes
 from app.api.v1 import pet as pet_routes
 from app.api.v1 import system as system_routes
 from app.api.v1 import users as users_routes
@@ -27,6 +28,11 @@ from app.core.errors import AppError, rate_limited
 from app.core.mock_middleware import EmptyResultMiddleware
 from app.core.ratelimit import limiter
 from app.fixtures.images import ensure_sample_images
+from app.repositories import database_url, get_store
+from app.services.comic import source as comic_source
+from app.services.music import source as music_source
+from app.services.pet_llm import service as pet_llm_service
+from app.services.pixiv import source as pixiv_source
 
 logger = logging.getLogger("miniappbackport")
 
@@ -40,6 +46,13 @@ async def lifespan(app: FastAPI):
     written = ensure_sample_images()
     if written:
         logger.info("已生成本地示例图片 %s 个", written)
+    # 启动时就把仓储建起来：DATABASE_URL 写错 / 数据库连不上时当场报错，
+    # 而不是让应用「看起来启动成功」，等第一个请求才 500。
+    store = get_store()
+    if database_url():
+        logger.info("仓储：MySQL（%s）", type(store).__name__)
+    else:
+        logger.info("仓储：内存（未配置 DATABASE_URL，进程重启即清空）")
     yield
 
 
@@ -70,6 +83,13 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = settings
+    # 内容源装配：CONTENT_SOURCE=pixiv 接管图片取数，默认 mock 行为不变
+    pixiv_source.configure(settings)
+    # 漫画页：COMIC_SOURCE=node 时接管 /v1/comics 的取数
+    comic_source.configure(settings)
+    # 音乐页：MUSIC_SOURCE=node 时接管 /v1/music 的取数
+    music_source.configure(settings)
+    pet_llm_service.configure(settings)
 
     # 最内层：只在 MOCK_EMPTY 打开时缓冲并改写列表响应
     app.add_middleware(EmptyResultMiddleware, settings=settings)
@@ -136,7 +156,8 @@ def create_app() -> FastAPI:
     app.include_router(system_routes.router)
     app.include_router(users_routes.router)
     app.include_router(images_routes.router)
-    app.include_router(daily_routes.router)
+    app.include_router(comics_routes.router)
+    app.include_router(music_routes.router)
     app.include_router(games_routes.router)
     app.include_router(pet_routes.router)
     app.include_router(dev_routes.router)
@@ -158,4 +179,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-

@@ -11,7 +11,7 @@ from app.core import envelope
 from app.core.pagination import paginate
 from app.core.timeutil import now
 from app.deps import CurrentUser, CursorQuery, FlagsDep, LimitQuery, SettingsDep
-from app.repositories.memory import store
+from app.repositories import store
 from app.schemas.envelopes import (
     EnvelopeAnonymousUser,
     EnvelopeHistoryDelete,

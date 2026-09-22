@@ -11,7 +11,6 @@ LIST_PATHS = (
     "/v1/images/recommended",
     "/v1/images/search?q=初音",
     "/v1/images/favorites",
-    "/v1/daily/bilibili",
     "/v1/games/today",
     "/v1/games",
     "/v1/pet/conversations",

@@ -10,7 +10,7 @@ from app.api.v1.common import error_responses
 from app.core import envelope
 from app.core.timeutil import now
 from app.deps import CurrentUser, SettingsDep, require_admin_token
-from app.repositories.memory import store
+from app.repositories import store
 from app.schemas.envelopes import EnvelopeDevReset
 from app.schemas.health import DevResetResult, ResetCounters
 

@@ -19,6 +19,8 @@ class Source(str, Enum):
     pixiv = "pixiv"
     bilibili = "bilibili"
     game = "game"
+    music = "music"
+    comic = "comic"
 
 
 class ContentType(str, Enum):

@@ -15,6 +15,7 @@ from app.deps import BaseUrlDep, FlagsDep, SettingsDep
 from app.schemas.envelopes import EnvelopeHealth
 from app.schemas.health import Health, MockSwitchState
 from app.services import catalog
+from app.services.pixiv import source as pixiv_source
 
 router = APIRouter(tags=["system"])
 
@@ -27,8 +28,12 @@ router = APIRouter(tags=["system"])
     responses=error_responses(500),
 )
 def get_health(settings: SettingsDep, flags: FlagsDep):
+    # 真实内容源启用但登录态缺失或最近一次上游调用失败 → degraded（见 7.4 第 2 条）。
+    # 这里不做主动探测：/health 必须便宜，上游状态由最近一次真实请求记录。
+    degraded = pixiv_source.degraded()
+
     health = Health(
-        status="ok",
+        status="degraded" if degraded else "ok",
         version=settings.service_version,
         time=now(),
         timezone=TIMEZONE_NAME,

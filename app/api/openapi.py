@@ -9,6 +9,11 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 
+from app.api.contract_examples import (
+    content_item_examples,
+    error_code_description,
+    error_examples,
+)
 from app.schemas.common import ErrorResponse
 from app.schemas.content import CardPayload, GamePayload, ImagePayload, VideoPayload
 
@@ -27,9 +32,9 @@ CONTRACT_NOTES = [
 ]
 
 SERVERS = [
-    {"url": "http://127.0.0.1:8000", "description": "本机开发"},
+    {"url": "http://127.0.0.1:18421", "description": "本机开发"},
     {
-        "url": "http://{host}:8000",
+        "url": "http://{host}:18421",
         "description": "局域网真机联调",
         "variables": {"host": {"default": "192.168.1.10"}},
     },
@@ -97,6 +102,22 @@ def _mark_public_operations(schema: dict[str, Any]) -> None:
                 operation["security"] = []
 
 
+def _apply_contract_extras(schemas: dict[str, Any]) -> None:
+    """写入契约快照里的手写内容：schema 示例与错误码说明。
+
+    这些内容原先手写在 contract/openapi.json 里，但该文件是本服务 OpenAPI 的导出
+    结果（--sync 整份覆盖），手写的部分会被抹掉。改为由服务端生成后，同步才是幂等的。
+    """
+    content_item = schemas.get("ContentItem")
+    if isinstance(content_item, dict):
+        content_item["examples"] = content_item_examples()
+    error_code = schemas.get("ErrorCode")
+    if isinstance(error_code, dict):
+        error_code["description"] = error_code_description()
+    error_response = schemas.get("ErrorResponse")
+    if isinstance(error_response, dict):
+        error_response["examples"] = error_examples()
+
 def install(app: FastAPI) -> None:
     def custom_openapi() -> dict[str, Any]:
         if app.openapi_schema:
@@ -116,6 +137,7 @@ def install(app: FastAPI) -> None:
         for name, payload in _payload_schemas().items():
             schemas.setdefault(name, payload)
 
+        _apply_contract_extras(schemas)
         _fix_validation_responses(schema)
         _mark_public_operations(schema)
 

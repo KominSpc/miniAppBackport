@@ -6,8 +6,10 @@ from typing import Any
 
 from app.agents import chat
 from app.core.timeutil import now, today
-from app.repositories.memory import new_id, store
+from app.repositories import store
+from app.repositories.memory import new_id
 from app.services import catalog, daily, interaction
+from app.services.pet_llm import service as pet_llm
 
 MAX_SUGGESTIONS = 4
 
@@ -81,11 +83,20 @@ def handle_chat(
     context: dict[str, Any] | None,
     base_url: str,
     safe_mode: bool,
+    persona: Any = None,
+    touched_part: str | None = None,
 ) -> dict[str, Any]:
+    # 触碰触发的一轮：标题不能拿那句合成提示词（「用户伸手摸了摸你的头」），
+    # 它在聊天列表里会显得莫名其妙。
+    touch_only = bool(touched_part)
     conversation = store.get_conversation(user_id, conversation_id) if conversation_id else None
     if conversation is None:
-        conversation = store.create_conversation(user_id, title=message.strip()[:24])
+        title = f"摸摸{touched_part}" if touch_only else message.strip()[:24]
+        conversation = store.create_conversation(user_id, title=title)
     conversation_id = conversation["id"]
+    # 历史必须在写入本轮提问之前取：模型要看到的是「之前说过什么」，
+    # 把用户刚发的这句也塞进历史等于说了两遍。
+    history = store.list_messages(user_id, conversation_id)
 
     user_message = {
         "id": new_id("msg"),
@@ -96,7 +107,11 @@ def handle_chat(
         "live2d_action": None,
         "suggestions": [],
     }
-    store.append_message(user_id, conversation_id, user_message)
+    # 摸一下宠物不是「用户说的话」：这一轮不写进聊天记录，只在本次请求里作为
+    # user 轮次发给模型（部位名走 touched_part → system prompt）。否则用户每摸一次，
+    # 对话里就多出一句自己没发过的「（用户伸手摸了摸你的头）」。
+    if not touch_only:
+        store.append_message(user_id, conversation_id, user_message)
 
     decision = chat.decide(message, context)
     suggestions, facts = _suggestions(
@@ -106,7 +121,24 @@ def handle_chat(
         safe_mode=safe_mode,
         user_id=user_id,
     )
-    reply = chat.compose_reply(decision, facts)
+    # 规则引擎先给出确定性回复：LLM 不可用或两次质检都不过时就用它，
+    # 聊天因此不会因为模型抽风而中断。
+    fallback = chat.compose_reply(decision, facts)
+    # 隐藏好感度：读当前值传进去，模型在回复末尾附一个增减标记，这里累加回库。
+    # 规则引擎路径不产出标记，但当前分数照样回报（客户端不显示，测试与调试要看）。
+    affection = store.get_affection(user_id)
+    outcome = pet_llm.compose(
+        fallback=fallback,
+        message=message,
+        persona=persona,
+        history=history,
+        touched_part=touched_part,
+        facts=facts,
+        affection=affection,
+    )
+    reply = outcome["reply"]
+    delta = int(outcome.get("affection_delta") or 0)
+    affection_now = store.add_affection(user_id, delta) if delta else affection
 
     assistant_message = {
         "id": new_id("msg"),
@@ -127,6 +159,10 @@ def handle_chat(
         "intent": decision.intent,
         "suggestions": suggestions,
         "live2d_action": decision.live2d_action,
+        "engine": outcome["engine"],
+        "persona_id": outcome["persona_id"],
+        "affection": affection_now,
+        "actions": outcome.get("actions") or [],
     }
 
 

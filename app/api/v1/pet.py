@@ -14,9 +14,11 @@ from app.schemas.envelopes import (
     EnvelopeConversationPage,
     EnvelopeMessagePage,
     EnvelopePetChatResponse,
+    EnvelopePetTtsResult,
 )
-from app.schemas.pet import PetChatRequest, PetChatResponse
+from app.schemas.pet import PetChatRequest, PetChatResponse, PetTtsRequest, PetTtsResult
 from app.services import interaction, pet
+from app.services.pet_llm import tts as pet_tts
 
 router = APIRouter(prefix="/v1/pet", tags=["pet"])
 
@@ -40,8 +42,26 @@ def post_pet_chat(payload: PetChatRequest, user: CurrentUser, base_url: BaseUrlD
         context=context,
         base_url=base_url,
         safe_mode=interaction.safe_mode_for(user["user_id"]),
+        persona=payload.persona,
+        touched_part=payload.touched_part,
     )
     return envelope.ok(PetChatResponse(**result))
+
+
+@router.post(
+    "/tts",
+    operation_id="postPetTts",
+    response_model=EnvelopePetTtsResult,
+    summary="语音合成（接口预留，尚未接入供应商）",
+    responses=error_responses(400, 401, 422, 429, 500, 503),
+)
+def post_pet_tts(payload: PetTtsRequest, user: CurrentUser):
+    """需求要求「后端准备 tts 的接口（暂时不用）」。
+
+    契约现在就定下来（含 503 的失败语义），客户端据此隐藏播放入口；
+    接入供应商后只需要把 ``pet_tts.synthesize`` 实现掉。
+    """
+    return envelope.ok(PetTtsResult(**pet_tts.synthesize(payload.text, voice=payload.voice)))
 
 
 @router.get(

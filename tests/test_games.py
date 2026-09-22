@@ -52,3 +52,51 @@ def test_filter_change_invalidates_cursor(client: TestClient, auth: dict[str, st
 def test_games_requires_auth(client: TestClient) -> None:
     assert client.get("/v1/games").status_code == 401
     assert client.get("/v1/games/today").status_code == 401
+
+
+def test_genre_filter_is_exact_not_substring(client: TestClient, auth: dict[str, str]) -> None:
+    """「模拟」只命中「模拟」自身，不能顺带命中「模拟经营」。"""
+    items = client.get("/v1/games?genre=模拟&limit=50", headers=auth).json()["data"]["items"]
+    assert items
+    assert all("模拟" in item["payload"]["genres"] for item in items)
+    assert all("模拟经营" not in item["payload"]["genres"] for item in items)
+
+    narrow = client.get("/v1/games?genre=模拟经营&limit=50", headers=auth).json()["data"]["items"]
+    assert len(narrow) == 3
+    assert all("模拟经营" in item["payload"]["genres"] for item in narrow)
+
+
+def test_game_filters_cover_every_option(client: TestClient, auth: dict[str, str]) -> None:
+    """筛选条选项统计自全部游戏，与当前筛选条件无关。"""
+    body = client.get("/v1/games/filters", headers=auth).json()["data"]
+    platforms = {row["value"]: row["count"] for row in body["platforms"]}
+    genres = {row["value"]: row["count"] for row in body["genres"]}
+    assert platforms == {"Android": 24, "iOS": 15, "PC": 6}
+    assert len(genres) == 32
+    assert genres["角色扮演"] == 4
+    assert genres["模拟"] == 1
+    assert genres["模拟经营"] == 3
+
+
+def test_game_filters_counts_match_filtered_pages(client: TestClient, auth: dict[str, str]) -> None:
+    """计数与真实筛选一致：点按钮后的列表长度等于按钮上的数量。"""
+    body = client.get("/v1/games/filters", headers=auth).json()["data"]
+    for row in body["platforms"]:
+        page = client.get("/v1/games", params={"platform": row["value"], "limit": 50}, headers=auth).json()
+        assert len(page["data"]["items"]) == row["count"], row["value"]
+    for row in body["genres"]:
+        page = client.get("/v1/games", params={"genre": row["value"], "limit": 50}, headers=auth).json()
+        assert len(page["data"]["items"]) == row["count"], row["value"]
+
+
+def test_game_filters_sorting_is_stable(client: TestClient, auth: dict[str, str]) -> None:
+    body = client.get("/v1/games/filters", headers=auth).json()["data"]
+    for rows in (body["platforms"], body["genres"]):
+        keys = [(-row["count"], row["value"]) for row in rows]
+        assert keys == sorted(keys)
+    again = client.get("/v1/games/filters", headers=auth).json()["data"]
+    assert again == body
+
+
+def test_game_filters_requires_auth(client: TestClient) -> None:
+    assert client.get("/v1/games/filters").status_code == 401

@@ -13,6 +13,8 @@ from app.core.ratelimit import limiter
 from app.core.timeutil import now
 from app.main import app
 from app.repositories.memory import store
+from app.services.comic import source as comic_source
+from app.services.music import source as music_source
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
@@ -27,9 +29,15 @@ def client() -> TestClient:
 def clean_state():
     store.reset()
     limiter.clear()
+    # 图片字节缓存是进程级的：不清掉的话，后一个用例用同一张图但换了假传输时
+    # 会读到前一个用例缓存下来的字节，断言莫名其妙地失败。
+    comic_source.reset()
+    music_source.reset()
     yield
     store.reset()
     limiter.clear()
+    comic_source.reset()
+    music_source.reset()
 
 
 @pytest.fixture

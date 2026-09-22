@@ -55,6 +55,15 @@ class ConversationRepository(Protocol):
     def list_messages(self, user_id: str, conversation_id: str) -> list[dict[str, Any]]: ...
 
 
+@runtime_checkable
+class PetRepository(Protocol):
+    """宠物的隐藏好感度。界面上不展示，只用来调节模型说话的口气。"""
+
+    def get_affection(self, user_id: str) -> int: ...
+
+    def add_affection(self, user_id: str, delta: int) -> int: ...
+
+
 def conversation_timestamp_fields() -> tuple[str, ...]:
     return ("created_at", "updated_at")
 

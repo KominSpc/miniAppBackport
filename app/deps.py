@@ -10,7 +10,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.config import MockFlags, Settings, base_url_for, mock_flags_for
 from app.core.errors import AppError, unauthorized
 from app.core.timeutil import now
-from app.repositories.memory import store
+from app.repositories import store
 
 # scheme_name 决定导出的 OpenAPI 里安全方案的名字，必须与契约一致
 bearer_scheme = HTTPBearer(

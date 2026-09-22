@@ -19,6 +19,8 @@ def test_image_expert_routes_and_returns_suggestions(client: TestClient, auth: d
     assert data["expert"] == "image"
     assert data["intent"] == "search_image"
     assert data["live2d_action"] == "think"
+    # 动作权限：规则引擎路径没有动作，字段照样给（客户端不用分支判断）
+    assert data["actions"] == []
     assert data["suggestions"]
     assert all(item["type"] == "image" for item in data["suggestions"])
 
@@ -143,3 +145,65 @@ def test_conversations_pagination(client: TestClient, auth: dict[str, str]) -> N
 
 def test_chat_requires_auth(client: TestClient) -> None:
     assert client.post("/v1/pet/chat", json={"message": "你好"}).status_code == 401
+
+
+def test_touch_turn_is_not_written_into_the_chat_log(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    """被摸一下不是用户说的话：这一轮不该在聊天记录里留下「（用户伸手摸了摸你的头）」。
+
+    部位名仍然随本轮请求发给模型（走 touched_part → system prompt），只是不入库；
+    模型的回应照旧入库，所以历史里应该只有 user/assistant 各一条。
+    """
+    data = chat(
+        client,
+        auth,
+        "（用户伸手摸了摸你的头）",
+        touched_part="头",
+    )
+    conversation_id = data["conversation_id"]
+
+    messages = client.get(
+        f"/v1/pet/conversations/{conversation_id}/messages", headers=auth
+    ).json()["data"]["items"]
+    assert [message["role"] for message in messages] == ["assistant"]
+    assert "摸了摸" not in messages[0]["content"]
+
+    conversations = client.get("/v1/pet/conversations", headers=auth).json()["data"]["items"]
+    # 会话标题也不能是那句合成提示词
+    assert conversations[0]["title"] == "摸摸头"
+
+
+def test_normal_turn_is_still_written_into_the_chat_log(
+    client: TestClient, auth: dict[str, str]
+) -> None:
+    data = chat(client, auth, "你好呀")
+    messages = client.get(
+        f"/v1/pet/conversations/{data['conversation_id']}/messages", headers=auth
+    ).json()["data"]["items"]
+    assert [message["role"] for message in messages] == ["user", "assistant"]
+
+
+def test_affection_starts_at_zero_and_is_reported(client: TestClient, auth: dict[str, str]) -> None:
+    assert chat(client, auth, "你好呀")["affection"] == 0
+
+
+def test_affection_is_stored_per_user(
+    client: TestClient, auth: dict[str, str], second_user: dict[str, str]
+) -> None:
+    from app.repositories import store
+
+    chat(client, auth, "你好呀")
+    user_id = store.resolve_token(auth["Authorization"].removeprefix("Bearer "))["user_id"]
+
+    assert store.add_affection(user_id, 5) == 5
+    # 再加一次是累加，不是覆盖
+    assert store.add_affection(user_id, 2) == 7
+    assert chat(client, auth, "在吗")["affection"] == 7
+    # 上界方向夹住
+    assert store.add_affection(user_id, 1000) == 100
+    assert store.add_affection(user_id, -1000) == 0
+
+    # 另一个用户不受影响
+    other = store.resolve_token(second_user["Authorization"].removeprefix("Bearer "))["user_id"]
+    assert store.get_affection(other) == 0

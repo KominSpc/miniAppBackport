@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from fixture_tables import FACTS, GAMES, IMAGES, VIDEOS  # noqa: E402
+from fixture_tables import ALIASES, FACTS, GAMES, IMAGES, VIDEOS  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "app" / "fixtures" / "data"
 
@@ -113,6 +113,7 @@ def main() -> int:
         "videos.json": build_videos(),
         "games.json": build_games(),
         "facts.json": build_facts(),
+        "aliases.json": ALIASES,
     }
     for name, data in payloads.items():
         path = OUT_DIR / name
